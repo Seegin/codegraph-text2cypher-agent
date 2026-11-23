@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Frontend build artifacts & deps
+frontend/node_modules/
+frontend/dist/
+
+# Secrets, raw course slides with DB credentials, & local runtime DB
+.env
+*.pptx
+data/app.db
+data/app.db-journal
+data/app.db-wal
+data/app.db-shm
+
+# Intermediate scratch eval runs & local archives
+eval/results/*_r1.json
+eval/results/*_r2*.json
+eval/results/*.local.json
+release/
+
+# OS / IDE
+.DS_Store
+*.log
