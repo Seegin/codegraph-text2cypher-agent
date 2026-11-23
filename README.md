@@ -1,7 +1,8 @@
 # CodeGraph Text2Cypher 智能体
 
 > **中国科学院大学 · 高级软件工程大作业（第五组）**  
-> **面向微服务代码知识图谱的自然语言查询、变更影响分析与可视化平台**
+> **面向微服务代码知识图谱的自然语言查询、变更影响分析与可视化平台**  
+> 📖 **完整通俗解读与技术架构方案说明书**：👉 **[docs/technical_architecture_and_guide.md](docs/technical_architecture_and_guide.md)** | 📋 **实库 Schema 勘察契约**：[docs/schema_contract.md](docs/schema_contract.md)
 
 [![CI](https://github.com/Seegin/codegraph-text2cypher-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Seegin/codegraph-text2cypher-agent/actions)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
