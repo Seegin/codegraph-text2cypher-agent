@@ -1,0 +1,936 @@
+{
+  "tag": "full_system_live_llm",
+  "mode": "llm:deepseek/DeepSeek-V4.1-Flash",
+  "provider": "deepseek",
+  "model": "DeepSeek-V4.1-Flash",
+  "timestamp": "2026-11-23T08:45:56.231274Z",
+  "schema_hash": "22b9370aac98dd67",
+  "graph_version": "master-to-dd92845",
+  "config": {
+    "use_kb_rag": true,
+    "use_llm_rerank": true,
+    "use_decomposition": true,
+    "use_semantic_check": true,
+    "use_llm_summary": true
+  },
+  "total": 30,
+  "passed": 30,
+  "accuracy_pct": 100.0,
+  "grade": "A",
+  "p50_latency_ms": 6393.97,
+  "p95_latency_ms": 14320.03,
+  "total_repairs": 0,
+  "by_level": {
+    "simple": {
+      "total": 10,
+      "passed": 10
+    },
+    "medium": {
+      "total": 12,
+      "passed": 12
+    },
+    "complex": {
+      "total": 8,
+      "passed": 8
+    }
+  },
+  "results": [
+    {
+      "id": "S01",
+      "level": "simple",
+      "category": "单节点计数",
+      "question": "统计图谱中微服务的总数",
+      "passed": true,
+      "reason": "expected=41, got=41",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (s:`微服务`) RETURN count(DISTINCT s.nodeId) AS microservice_count",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (s:`微服务`) RETURN count(DISTINCT s.nodeId) AS microservice_count",
+          "params": {}
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 0,
+      "edges": 0,
+      "latency_ms": 3902.72,
+      "summary": "直接结论：图谱中微服务总数为41个。关键证据：查询结果记录显示 microservice_count 字段值为 41，总记录数为 1，路径证据为空。"
+    },
+    {
+      "id": "S02",
+      "level": "simple",
+      "category": "单节点查询",
+      "question": "查询 ts-order-service 微服务包含哪些类",
+      "passed": true,
+      "reason": "exact set match (65 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (c:`类`) WHERE $service IN c.serviceContexts RETURN c.nodeId AS class_id, c.`简名` AS class_name, c.`全限定名` AS fqn, c.`类类型` AS class_type, c ORDER BY c.`全限定名`",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (c:`类`) WHERE $service IN c.serviceContexts RETURN c.nodeId AS class_id, c.`简名` AS class_name, c.`全限定名` AS fqn, c.`类类型` AS class_type, c ORDER BY c.`全限定名`",
+          "params": {
+            "service": "ts-order-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 65,
+      "nodes": 65,
+      "edges": 0,
+      "latency_ms": 5533.1,
+      "summary": "查询结果共65条记录，证据仅展示前若干条。ts-order-service 关联的类包括 SwaggerConfig（edu.fudan.common.config.SwaggerConfig）和 Account（edu.fudan.common.entity.Account），二者均属 ts-common 模块，其 serviceContexts 含 ts-order-service。其余记录未在证据中展开，无法确认具体类名。"
+    },
+    {
+      "id": "S03",
+      "level": "simple",
+      "category": "属性过滤",
+      "question": "查找 ts-user-service 中类类型为 SERVICE_IMPL 的类",
+      "passed": true,
+      "reason": "exact set match (1 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (c:`类`) WHERE $service IN c.serviceContexts AND c.`类类型` = $class_type RETURN c.nodeId AS class_id, c.`简名` AS class_name, c.`全限定名` AS fqn, c.`类类型` AS class_type, c.serviceContexts AS services, c ORDER BY c.`全限定名`",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (c:`类`) WHERE $service IN c.serviceContexts AND c.`类类型` = $class_type RETURN c.nodeId AS class_id, c.`简名` AS class_name, c.`全限定名` AS fqn, c.`类类型` AS class_type, c.serviceContexts AS services, c ORDER BY c.`全限定名`",
+          "params": {
+            "service": "ts-user-service",
+            "class_type": "SERVICE_IMPL"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 1,
+      "edges": 0,
+      "latency_ms": 5856.54,
+      "summary": "结论：ts-user-service 中类类型为 SERVICE_IMPL 的类共 1 个，即 UserServiceImpl。关键证据：全限定名 user.service.impl.UserServiceImpl，简名 UserServiceImpl，类类型 SERVICE_IMPL，非接口，所属服务 ts-user-service，来源文件 /data/hyk/train-ticket/ts-user-service/src/main/java/user/service/impl/UserServiceImpl.java，来源行号 28。"
+    },
+    {
+      "id": "S04",
+      "level": "simple",
+      "category": "单节点查询",
+      "question": "列出图谱中所有的消息交换机",
+      "passed": true,
+      "reason": "exact set match via col 'nodeId' (1 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (ex:`消息交换机`) RETURN ex.nodeId AS nodeId, ex.`交换机名称` AS exchange_name, ex.`交换机类型` AS exchange_type, ex.`所属服务名` AS service_name, ex.serviceContexts AS serviceContexts, ex AS exchange ORDER BY exchange_name",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (ex:`消息交换机`) RETURN ex.nodeId AS nodeId, ex.`交换机名称` AS exchange_name, ex.`交换机类型` AS exchange_type, ex.`所属服务名` AS service_name, ex.serviceContexts AS serviceContexts, ex AS exchange ORDER BY exchange_name",
+          "params": {}
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 1,
+      "edges": 0,
+      "latency_ms": 4881.48,
+      "summary": "图谱中仅存在1个消息交换机：名称为(default)，类型为default，所属服务为ts-food-service，其服务上下文包括ts-delivery-service、ts-food-service、ts-notification-service、ts-preserve-other-service、ts-preserve-service。"
+    },
+    {
+      "id": "S05",
+      "level": "simple",
+      "category": "属性过滤",
+      "question": "查询所有 HTTP 方法为 PUT 的上游 API 端点",
+      "passed": true,
+      "reason": "exact set match (26 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (u:`上游API` {`HTTP方法`: $http_method}) RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, u.`控制器方法` AS controller_method, u.serviceContexts AS services, u ORDER BY path",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (u:`上游API` {`HTTP方法`: $http_method}) RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, u.`控制器方法` AS controller_method, u.serviceContexts AS services, u ORDER BY path",
+          "params": {
+            "http_method": "PUT"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 26,
+      "nodes": 26,
+      "edges": 0,
+      "latency_ms": 5197.46,
+      "summary": "共查询到26个HTTP方法为PUT的上游API端点，均归属微服务ts-admin-basic-info-service，控制器为adminbasic.controller.AdminBasicInfoController。关键证据示例：PUT /api/v1/adminbasicservice/adminbasic/configs（modifyConfig）、/contacts（modifyContacts）、/prices（modifyPrice）、/stations（modifyStation）。路径证据为空。"
+    },
+    {
+      "id": "S06",
+      "level": "simple",
+      "category": "入口API发现",
+      "question": "列出 ts-station-service 暴露的所有上游入口 API",
+      "passed": true,
+      "reason": "exact set match (9 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (u:`上游API`)-[r:`归属于`]->(m:`方法`) WHERE $service IN u.serviceContexts RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, m.nodeId AS method_id, m.`全限定名` AS handler_method, u, r, m ORDER BY path",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (u:`上游API`)-[r:`归属于`]->(m:`方法`) WHERE $service IN u.serviceContexts RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, m.nodeId AS method_id, m.`全限定名` AS handler_method, u, r, m ORDER BY path",
+          "params": {
+            "service": "ts-station-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 9,
+      "nodes": 18,
+      "edges": 9,
+      "latency_ms": 5323.07,
+      "summary": "ts-station-service 暴露的上游入口 API 共 9 个，均由 StationController 处理。证据中明确可见：GET /api/v1/stationservice/stations 对应 StationController.query；POST /api/v1/stationservice/stations 对应 StationController.create。其余 7 条记录未在输入中展开，故不列出具体路径与方法。"
+    },
+    {
+      "id": "S07",
+      "level": "simple",
+      "category": "单跳归属",
+      "question": "查询 StationController 类包含哪些方法",
+      "passed": true,
+      "reason": "exact set match (9 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m:`方法`)-[:`归属于`]->(c:`类` {nodeId: $class_nodeId}) RETURN m.nodeId AS method_id, m.`方法名` AS method_name, m.`方法签名` AS signature, m.`返回类型` AS return_type, m.`访问修饰符` AS modifier, m.`是否入口方法` AS is_entry, c.nodeId AS class_id, c.`全限定名` AS class_fqn, m, c ORDER BY m.`方法名`",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m:`方法`)-[:`归属于`]->(c:`类` {nodeId: $class_nodeId}) RETURN m.nodeId AS method_id, m.`方法名` AS method_name, m.`方法签名` AS signature, m.`返回类型` AS return_type, m.`访问修饰符` AS modifier, m.`是否入口方法` AS is_entry, c.nodeId AS class_id, c.`全限定名` AS class_fqn, m, c ORDER BY m.`方法名`",
+          "params": {
+            "class_nodeId": "def:fe4969cd8b0ac80507ac3e74e8075ae446de9f2e51b6565d33a71a3035ed6d43"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 9,
+      "nodes": 10,
+      "edges": 0,
+      "latency_ms": 5768.72,
+      "summary": "StationController（fdse.microservice.controller.StationController，ts-station-service）包含方法：create（第38行）、delete（第50行）等，共9条方法记录；证据仅明确列出 create 与 delete，其余方法名未在输入中给出，故不列举。均为 public 入口方法，返回 ResponseEntity。"
+    },
+    {
+      "id": "S08",
+      "level": "simple",
+      "category": "单跳关系",
+      "question": "查询图谱中的类继承关系",
+      "passed": true,
+      "reason": "exact set match (1 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (sub:`类`)-[r:`继承`]->(sup:`类`) RETURN sub.nodeId AS sub_id, sub.`简名` AS sub_name, sub.`全限定名` AS sub_fqn, sup.nodeId AS sup_id, sup.`简名` AS sup_name, sup.`全限定名` AS sup_fqn, sub, r, sup ORDER BY sub_fqn, sup_fqn",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (sub:`类`)-[r:`继承`]->(sup:`类`) RETURN sub.nodeId AS sub_id, sub.`简名` AS sub_name, sub.`全限定名` AS sub_fqn, sup.nodeId AS sup_id, sup.`简名` AS sup_name, sup.`全限定名` AS sup_fqn, sub, r, sup ORDER BY sub_fqn, sup_fqn",
+          "params": {}
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 2,
+      "edges": 1,
+      "latency_ms": 5905.8,
+      "summary": "图谱中仅记录1条类继承关系：TokenException 继承 BaseException。两者全限定名分别为 edu.fudan.common.exception.TokenException 与 edu.fudan.common.exception.BaseException，均位于 ts-common 模块，来源文件为 ts-common/src/main/java/edu/fudan/common/exception/TokenException.java 第6行，关系类型为“继承”。"
+    },
+    {
+      "id": "S09",
+      "level": "simple",
+      "category": "单跳关系",
+      "question": "查询 ts-auth-service 中的接口实现关系",
+      "passed": true,
+      "reason": "exact set match (2 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (impl:`类`)-[r:`接口实现`]->(iface:`类`) WHERE $service IN impl.serviceContexts AND $service IN iface.serviceContexts RETURN impl.nodeId AS impl_id, impl.`简名` AS impl_name, impl.`全限定名` AS impl_fqn, iface.nodeId AS iface_id, iface.`简名` AS iface_name, iface.`全限定名` AS iface_fqn, impl, r, iface ORDER BY impl_fqn",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (impl:`类`)-[r:`接口实现`]->(iface:`类`) WHERE $service IN impl.serviceContexts AND $service IN iface.serviceContexts RETURN impl.nodeId AS impl_id, impl.`简名` AS impl_name, impl.`全限定名` AS impl_fqn, iface.nodeId AS iface_id, iface.`简名` AS iface_name, iface.`全限定名` AS iface_fqn, impl, r, iface ORDER BY impl_fqn",
+          "params": {
+            "service": "ts-auth-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 2,
+      "nodes": 4,
+      "edges": 2,
+      "latency_ms": 5625.52,
+      "summary": "ts-auth-service 中存在 2 条接口实现关系：TokenServiceImpl 实现 TokenService，UserServiceImpl 实现 UserService。证据：TokenServiceImpl（auth.service.impl.TokenServiceImpl）→ TokenService（auth.service.TokenService）；UserServiceImpl（auth.service.impl.UserServiceImpl）→ UserService（auth.service.UserService）。"
+    },
+    {
+      "id": "S10",
+      "level": "simple",
+      "category": "基础计数",
+      "question": "统计 ts-security-service 微服务下归属的配置节点数量",
+      "passed": true,
+      "reason": "expected=33, got=33",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (cfg:`配置`)-[:`归属于`]->(s:`微服务` {`nodeId`: $serviceId}) RETURN s.`服务名称` AS service_name, count(DISTINCT cfg.nodeId) AS config_count",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (cfg:`配置`)-[:`归属于`]->(s:`微服务` {`nodeId`: $serviceId}) RETURN s.`服务名称` AS service_name, count(DISTINCT cfg.nodeId) AS config_count",
+          "params": {
+            "serviceId": "svc:ts-security-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 0,
+      "edges": 0,
+      "latency_ms": 4674.55,
+      "summary": "结论：ts-security-service 微服务归属的配置节点数量为 33 个。关键证据：查询结果记录显示 service_name 为 ts-security-service，config_count 为 33；路径证据为空。"
+    },
+    {
+      "id": "M01",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "RebookController.rebook 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (8 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:f07b04bddcefde083d9f4f24f135807a4ef78c4f3d4982f7cad9ae47f0a81c7e"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 14,
+      "nodes": 34,
+      "edges": 39,
+      "latency_ms": 6945.85,
+      "summary": "结论：RebookController.rebook 经 RebookServiceImpl.rebook 调用 RebookServiceImpl.drawBackMoney，后者通过 RPC 下游调用 ts-inside-payment-service 的 GET /api/v1/inside_pay_service/inside_payment/drawback/{userId}/{money}。证据：调用链 RebookController.rebook→RebookServiceImpl.rebook→RebookServiceImpl.drawBackMoney（CALL，2跳）；drawBackMoney 第459行 RPC 下游调用指向上述 API。"
+    },
+    {
+      "id": "M02",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "AdminTravelController.addTravel 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (5 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:da72f1a59790b5c795e8dd5f4d6073eeb5675b225892db5e0c630d98a3e273e0"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 5,
+      "nodes": 16,
+      "edges": 15,
+      "latency_ms": 7065.31,
+      "summary": "结论：AdminTravelController.addTravel 经同服务内调用链，最终调用下游微服务 ts-route-service 的 GET /api/v1/routeservice/routes/{routeId}。关键证据：addTravel 调用 AdminTravelServiceImpl.addTravel，后者调用 checkTravelInfo，再调用 getRouteByRouteId，由该路径指向 ts-route-service 的上述 API。"
+    },
+    {
+      "id": "M03",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "SeatController.getLeftTicketOfInterval 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (3 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:e3ef1a5eee013b8dab0b125f548eedc66275ab1f64df65da078c312e58ca6dac"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 3,
+      "nodes": 9,
+      "edges": 8,
+      "latency_ms": 6809.44,
+      "summary": "结论：SeatController.getLeftTicketOfInterval 经 SeatServiceImpl.getLeftTicketOfInterval 调用 SeatServiceImpl.getDirectProportion，后者通过 RPC 调用下游微服务 ts-config-service 的 API：GET /api/v1/configservice/configs/DirectTicketAllocationProportion。证据：调用链为 SeatController.getLeftTicketOfInterval → SeatServiceImpl.getLeftTicketOfInterval → SeatServiceImpl.getDirectProportion；下游调用记录指向 ts-config-service。"
+    },
+    {
+      "id": "M04",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "InsidePaymentController.pay 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (3 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:b6ae2ec37f1957ee00cdad4fd81672981107478c613d987aebc060b7274b51c4"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 5,
+      "nodes": 11,
+      "edges": 12,
+      "latency_ms": 7365.26,
+      "summary": "结论：InsidePaymentController.pay 经内部调用链最终调用下游微服务 ts-order-other-service 的 API GET /api/v1/orderOtherService/orderOther/status/{orderId}/1。关键证据：调用路径为 InsidePaymentController.pay → InsidePaymentServiceImpl.pay → InsidePaymentServiceImpl.setOrderStatus，该路径关联上述下游 API；前两级方法均属 ts-inside-payment-service。"
+    },
+    {
+      "id": "M05",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "TravelPlanController.getByQuickest 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (3 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.nodeId AS downstream_api_id, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:8d6dc4cb44bee98da07742d5eda0ff4bc3c06ab6eeef19c35d127792b1ad4d0b"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 3,
+      "nodes": 11,
+      "edges": 10,
+      "latency_ms": 7217.71,
+      "summary": "结论：TravelPlanController.getByQuickest 经内部调用链最终调用下游微服务 ts-route-plan-service 的 POST /api/v1/routeplanservice/routePlan/quickestRoute。证据：调用链为 TravelPlanController.getByQuickest → TravelPlanServiceImpl.getQuickest → TravelPlanServiceImpl.getRoutePlanResultQuickest，该下游 API 归属 ts-route-plan-service。"
+    },
+    {
+      "id": "M06",
+      "level": "medium",
+      "category": "下游服务发现",
+      "question": "ExecuteControlller.executeTicket 方法调用了哪些下游微服务？",
+      "passed": true,
+      "reason": "exact set match (2 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (start:`方法` {nodeId: $node_id}) MATCH p=(start)-[rs:`调用`*0..6]->(m:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (m)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) RETURN DISTINCT svc.nodeId AS service_id, svc.`服务名称` AS target_service, d.caption AS downstream_api, p, rc, d, rt, svc ORDER BY target_service, downstream_api",
+          "params": {
+            "node_id": "def:39c773e67b9b9dee4ec798b91026c3bb4b88dbaf587a47c931838e611dd86df9"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 4,
+      "nodes": 12,
+      "edges": 13,
+      "latency_ms": 6958.66,
+      "summary": "结论：ExecuteControlller.executeTicket 经 ExecuteServiceImpl.ticketExecute 调用 ExecuteServiceImpl.executeOrderOther，最终调用下游微服务 ts-order-other-service。关键证据：调用链为 executeTicket→ticketExecute→executeOrderOther；下游 API 为 GET /api/v1/orderOtherService/orderOther/status/{orderId}/{status}，调用类型为下游 RPC 通信边界。"
+    },
+    {
+      "id": "M07",
+      "level": "medium",
+      "category": "反向依赖",
+      "question": "哪些微服务调用了 ts-order-service？",
+      "passed": true,
+      "reason": "exact set match (8 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[r2:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service, m.nodeId AS caller_method_id, m.`全限定名` AS caller_method, d.caption AS api, m, r1, d, r2, svc ORDER BY caller_service",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[r2:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service, m.nodeId AS caller_method_id, m.`全限定名` AS caller_method, d.caption AS api, m, r1, d, r2, svc ORDER BY caller_service",
+          "params": {
+            "service_id": "svc:ts-order-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 18,
+      "nodes": 37,
+      "edges": 36,
+      "latency_ms": 6145.55,
+      "summary": "结论：证据显示 ts-admin-order-service 调用了 ts-order-service。关键证据：AdminOrderServiceImpl.updateOrder 通过 RPC 调用 PUT /api/v1/orderservice/order/admin；AdminOrderServiceImpl.addOrder 通过 RPC 调用 POST /api/v1/orderservice/order/admin。两者目标服务均为 ts-order-service。"
+    },
+    {
+      "id": "M08",
+      "level": "medium",
+      "category": "反向依赖",
+      "question": "哪些微服务调用了 ts-station-service？",
+      "passed": true,
+      "reason": "exact set match (8 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[r2:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service, m.nodeId AS caller_method_id, m.`全限定名` AS caller_method, d.caption AS api, m, r1, d, r2, svc ORDER BY caller_service",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[r2:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service, m.nodeId AS caller_method_id, m.`全限定名` AS caller_method, d.caption AS api, m, r1, d, r2, svc ORDER BY caller_service",
+          "params": {
+            "service_id": "svc:ts-station-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 13,
+      "nodes": 27,
+      "edges": 26,
+      "latency_ms": 6043.56,
+      "summary": "结论：仅 ts-admin-basic-info-service 调用 ts-station-service。关键证据：该类 AdminBasicInfoServiceImpl 的 addStation 通过 RPC 调用 POST /api/v1/stationservice/stations；deleteStation 调用 DELETE /api/v1/stationservice/stations/{id}。证据中未出现其他调用方微服务。"
+    },
+    {
+      "id": "M09",
+      "level": "medium",
+      "category": "反向依赖",
+      "question": "哪些微服务调用了 ts-user-service？",
+      "passed": true,
+      "reason": "exact set match via col 'caller_service_name' (4 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service AS caller_service_name, caller.nodeId AS caller_method_id, caller.`全限定名` AS caller_method, d.caption AS called_api, caller, rc, d, rt, svc ORDER BY caller_service_name",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) UNWIND d.serviceContexts AS caller_service RETURN DISTINCT caller_service AS caller_service_name, caller.nodeId AS caller_method_id, caller.`全限定名` AS caller_method, d.caption AS called_api, caller, rc, d, rt, svc ORDER BY caller_service_name",
+          "params": {
+            "service_id": "svc:ts-user-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 7,
+      "nodes": 15,
+      "edges": 14,
+      "latency_ms": 6260.2,
+      "summary": "结论：证据中仅 ts-admin-user-service 调用了 ts-user-service。关键证据：AdminUserServiceImpl.deleteUser 调用 DELETE /api/v1/userservice/users/{userId}；AdminUserServiceImpl.updateUser 调用 PUT /api/v1/userservice/users。两者均为 RPC 下游调用，目标服务为 ts-user-service。"
+    },
+    {
+      "id": "M10",
+      "level": "medium",
+      "category": "聚合统计",
+      "question": "统计 ts-rebook-service 通过 HTTP 调用各下游微服务的接口数量",
+      "passed": true,
+      "reason": "map match (8 entries)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) WHERE $service IN m.serviceContexts RETURN svc.nodeId AS service_id, svc.`服务名称` AS target_service, count(DISTINCT d.nodeId) AS api_call_count, collect(DISTINCT d.caption) AS apis, collect(DISTINCT d) AS downstream_api_nodes, collect(DISTINCT svc) AS target_service_nodes ORDER BY api_call_count DESC, target_service ASC",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) WHERE $service IN m.serviceContexts RETURN svc.nodeId AS service_id, svc.`服务名称` AS target_service, count(DISTINCT d.nodeId) AS api_call_count, collect(DISTINCT d.caption) AS apis, collect(DISTINCT d) AS downstream_api_nodes, collect(DISTINCT svc) AS target_service_nodes ORDER BY api_call_count DESC, target_service ASC",
+          "params": {
+            "service": "ts-rebook-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 8,
+      "nodes": 23,
+      "edges": 0,
+      "latency_ms": 6393.97,
+      "summary": "结论：ts-rebook-service 仅通过 HTTP 调用 ts-order-other-service 一个下游微服务，共 4 个接口。关键证据：POST /api/v1/orderOtherService/orderOther、PUT /api/v1/orderOtherService/orderOther、POST /api/v1/orderOtherService/orderOther/{orderId}、GET /api/v1/orderOtherService/orderOther/{orderId}，均来自 RebookServiceImpl.java。"
+    },
+    {
+      "id": "M11",
+      "level": "medium",
+      "category": "聚合统计",
+      "question": "按配置节点数量统计排名前 10 的微服务",
+      "passed": true,
+      "reason": "map match (10 entries)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (cfg:`配置`)-[:`归属于`]->(s:`微服务`) RETURN s.nodeId AS nodeId, s.`服务名称` AS service_name, count(DISTINCT cfg.nodeId) AS config_count, s ORDER BY config_count DESC, service_name ASC LIMIT 10",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (cfg:`配置`)-[:`归属于`]->(s:`微服务`) RETURN s.nodeId AS nodeId, s.`服务名称` AS service_name, count(DISTINCT cfg.nodeId) AS config_count, s ORDER BY config_count DESC, service_name ASC LIMIT 10",
+          "params": {}
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 10,
+      "nodes": 10,
+      "edges": 0,
+      "latency_ms": 5038.46,
+      "summary": "按配置节点数量排名前10的微服务依次为：ts-gateway-service(168)、ts-notification-service(53)、ts-food-service(44)、ts-travel-service(42)、ts-security-service(33)、ts-auth-service(30)、ts-inside-payment-service(30)、ts-delivery-service(28)、ts-order-other-service(28)、ts-assurance-service(27)。证据为各微服务节点的config_count属性，共10条记录。"
+    },
+    {
+      "id": "M12",
+      "level": "medium",
+      "category": "组合属性过滤",
+      "question": "查询 ts-notification-service 中 HTTP 方法为 POST 的上游 API",
+      "passed": true,
+      "reason": "exact set match (4 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (u:`上游API`) WHERE $service IN u.serviceContexts AND u.`HTTP方法` = $http_method RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, u.`控制器方法` AS controller_method, u.serviceContexts AS services, u ORDER BY path",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (u:`上游API`) WHERE $service IN u.serviceContexts AND u.`HTTP方法` = $http_method RETURN u.nodeId AS api_id, u.caption AS api, u.`HTTP方法` AS http_method, u.`API路径` AS path, u.`控制器方法` AS controller_method, u.serviceContexts AS services, u ORDER BY path",
+          "params": {
+            "service": "ts-notification-service",
+            "http_method": "POST"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 4,
+      "nodes": 4,
+      "edges": 0,
+      "latency_ms": 5277.42,
+      "summary": "ts-notification-service 中 HTTP 方法为 POST 的上游 API 共 4 个，均由 notification.controller.NotificationController 处理。关键证据：POST /api/v1/notifyservice/notification/order_cancel_success（order_cancel_success）；POST /api/v1/notifyservice/notification/order_changed_success（order_changed_success）；POST /api/v1/notifyservice/notification/order_create_success（order_create_success）；POST /api/v1/notifyservice/notification/preserve_success（preserve_success）。"
+    },
+    {
+      "id": "H01",
+      "level": "complex",
+      "category": "MQ三阶段链路",
+      "question": "email 队列的消息由谁发布、经过哪个交换机、最终被谁消费？",
+      "passed": true,
+      "reason": "exact set match (3 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列` {nodeId: $queue_id})-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` RETURN pub.nodeId AS producer_method_id, pub.`全限定名` AS producer_method, pub.serviceContexts AS producer_services, ex.nodeId AS exchange_id, ex.`交换机名称` AS exchange_name, r1.`路由键` AS routing_key, q.nodeId AS queue_id, q.`队列名称` AS queue_name, sub.nodeId AS consumer_method_id, sub.`全限定名` AS consumer_method, sub.serviceContexts AS consumer_services, pub, r1, ex, r2, q, r3, sub",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列` {nodeId: $queue_id})-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` RETURN pub.nodeId AS producer_method_id, pub.`全限定名` AS producer_method, pub.serviceContexts AS producer_services, ex.nodeId AS exchange_id, ex.`交换机名称` AS exchange_name, r1.`路由键` AS routing_key, q.nodeId AS queue_id, q.`队列名称` AS queue_name, sub.nodeId AS consumer_method_id, sub.`全限定名` AS consumer_method, sub.serviceContexts AS consumer_services, pub, r1, ex, r2, q, r3, sub",
+          "params": {
+            "queue_id": "queue:ts-notification-service:email"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 3,
+      "nodes": 6,
+      "edges": 5,
+      "latency_ms": 6764.31,
+      "summary": "结论：email 队列消息由 ts-preserve-other-service 的 preserveOther.mq.RabbitSend.send 发布，经 (default) 交换机按路由键 email 路由，最终由 ts-notification-service 的 notification.mq.RabbitReceive.process 消费。关键证据：发布方法 RabbitSend.send（ts-preserve-other-service）；交换机 (default)；路由键 email；队列 email（ts-notification-service）；消费方法 RabbitReceive.process（ts-notification-service）。"
+    },
+    {
+      "id": "H02",
+      "level": "complex",
+      "category": "跨服务MQ通信",
+      "question": "ts-preserve-other-service 与 ts-notification-service 之间有哪些 MQ 消息通信？",
+      "passed": true,
+      "reason": "exact set match (1 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列`)-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` AND $src_service IN pub.serviceContexts AND $dst_service IN sub.serviceContexts RETURN pub.`全限定名` AS producer_method, ex.`交换机名称` AS exchange_name, r1.`路由键` AS routing_key, q.`队列名称` AS queue_name, sub.`全限定名` AS consumer_method, pub, r1, ex, r2, q, r3, sub",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列`)-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` AND $src_service IN pub.serviceContexts AND $dst_service IN sub.serviceContexts RETURN pub.`全限定名` AS producer_method, ex.`交换机名称` AS exchange_name, r1.`路由键` AS routing_key, q.`队列名称` AS queue_name, sub.`全限定名` AS consumer_method, pub, r1, ex, r2, q, r3, sub",
+          "params": {
+            "src_service": "ts-preserve-other-service",
+            "dst_service": "ts-notification-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 1,
+      "nodes": 4,
+      "edges": 3,
+      "latency_ms": 14320.03,
+      "summary": "ts-preserve-other-service 通过 MQ 向 ts-notification-service 发送消息：preserveOther.mq.RabbitSend.send 发布至默认交换机（default），路由键为 email，消息路由至 ts-notification-service 的 email 队列，由 notification.mq.RabbitReceive.process 消费。"
+    },
+    {
+      "id": "H03",
+      "level": "complex",
+      "category": "多跳跨服务RPC",
+      "question": "追踪 ts-travel2-service 经由中间服务间接调用的两跳下游微服务链路",
+      "passed": true,
+      "reason": "exact set match (7 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m1:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d1:`下游API`)-[r2:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u1:`上游API`)-[r3:`归属于`]->(m2:`方法`) WHERE $service IN m1.serviceContexts MATCH p2=(m2)-[rs:`调用`*0..4]->(m2b:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (m2b)-[r4:`调用` {`关系语义`: '通信边界'}]->(d2:`下游API`)-[r5:`目标服务`]->(s3:`微服务`) WHERE NOT ($service IN m2.serviceContexts) AND s3.`服务名称` <> $service RETURN DISTINCT $service AS hop0_service, m2.serviceContexts[0] AS hop1_service, s3.`服务名称` AS hop2_service, d1.caption AS hop1_api, d2.caption AS hop2_api, m1, r1, d1, r2, u1, r3, p2, r4, d2, r5, s3 ORDER BY hop1_service, hop2_service",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m1:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d1:`下游API`)-[r2:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u1:`上游API`)-[r3:`归属于`]->(m2:`方法`) WHERE $service IN m1.serviceContexts MATCH p2=(m2)-[rs:`调用`*0..4]->(m2b:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (m2b)-[r4:`调用` {`关系语义`: '通信边界'}]->(d2:`下游API`)-[r5:`目标服务`]->(s3:`微服务`) WHERE NOT ($service IN m2.serviceContexts) AND s3.`服务名称` <> $service RETURN DISTINCT $service AS hop0_service, m2.serviceContexts[0] AS hop1_service, s3.`服务名称` AS hop2_service, d1.caption AS hop1_api, d2.caption AS hop2_api, m1, r1, d1, r2, u1, r3, p2, r4, d2, r5, s3 ORDER BY hop1_service, hop2_service",
+          "params": {
+            "service": "ts-travel2-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 11,
+      "nodes": 42,
+      "edges": 43,
+      "latency_ms": 8315.59,
+      "summary": "结论：ts-travel2-service 经 ts-basic-service 间接调用 ts-price-service，形成两跳下游链路。关键证据：TravelServiceImpl.getTicketsByBatch 以 RPC 调用 POST /api/v1/basicservice/basic/travels（ts-basic-service，BasicController.queryForTravels）；该服务内 BasicServiceImpl.queryForTravels 调用 queryPriceConfigByRouteIdsAndTrainTypes，对应下游 POST /api/v1/priceservice/prices/byRouteIdsAndTrainTypes（ts-price-service）。"
+    },
+    {
+      "id": "H04",
+      "level": "complex",
+      "category": "多跳跨服务RPC",
+      "question": "追踪 ts-preserve-service 经由中间服务间接调用的两跳下游微服务链路",
+      "passed": true,
+      "reason": "exact set match (9 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m1:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d1:`下游API`)-[r2:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u1:`上游API`)-[r3:`归属于`]->(m2:`方法`) WHERE $service IN m1.serviceContexts MATCH p2=(m2)-[rs:`调用`*0..4]->(m2b:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (m2b)-[r4:`调用` {`关系语义`: '通信边界'}]->(d2:`下游API`)-[r5:`目标服务`]->(s3:`微服务`) WHERE NOT ($service IN m2.serviceContexts) AND s3.`服务名称` <> $service RETURN DISTINCT $service AS hop0_service, m2.serviceContexts[0] AS hop1_service, s3.`服务名称` AS hop2_service, d1.caption AS hop1_api, d2.caption AS hop2_api, m1, r1, d1, r2, u1, r3, p2, r4, d2, r5, s3 ORDER BY hop1_service, hop2_service",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (m1:`方法`)-[r1:`调用` {`关系语义`: '通信边界'}]->(d1:`下游API`)-[r2:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u1:`上游API`)-[r3:`归属于`]->(m2:`方法`) WHERE $service IN m1.serviceContexts MATCH p2=(m2)-[rs:`调用`*0..4]->(m2b:`方法`) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (m2b)-[r4:`调用` {`关系语义`: '通信边界'}]->(d2:`下游API`)-[r5:`目标服务`]->(s3:`微服务`) WHERE NOT ($service IN m2.serviceContexts) AND s3.`服务名称` <> $service RETURN DISTINCT $service AS hop0_service, m2.serviceContexts[0] AS hop1_service, s3.`服务名称` AS hop2_service, d1.caption AS hop1_api, d2.caption AS hop2_api, m1, r1, d1, r2, u1, r3, p2, r4, d2, r5, s3 ORDER BY hop1_service, hop2_service",
+          "params": {
+            "service": "ts-preserve-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 11,
+      "nodes": 54,
+      "edges": 51,
+      "latency_ms": 13933.66,
+      "summary": "结论：ts-preserve-service 经 ts-basic-service 间接调用 ts-price-service。证据：PreserveServiceImpl.preserve 以 RPC 调用 POST /api/v1/basicservice/basic/travel（ts-basic-service，BasicController.queryForTravel）；该服务再调用 GET /api/v1/priceservice/prices/{routeId}/{trainType}（ts-price-service）。"
+    },
+    {
+      "id": "H05",
+      "level": "complex",
+      "category": "跨服务变更影响分析",
+      "question": "修改 BasicController.queryForTravel 方法会影响哪些上游入口 API？",
+      "passed": true,
+      "reason": "exact set match (5 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm",
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p=(entry:`方法`)-[rs:`调用`*0..6]->(target) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(entry) RETURN DISTINCT 'IMPACT' AS mechanism, u.nodeId AS api_id, u.caption AS affected_api, u.serviceContexts AS services, entry.`全限定名` AS entry_method, u, ru, p ORDER BY affected_api",
+      "all_cyphers": [
+        {
+          "sq": "sq_impact_local",
+          "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p=(entry:`方法`)-[rs:`调用`*0..6]->(target) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(entry) RETURN DISTINCT 'IMPACT' AS mechanism, u.nodeId AS api_id, u.caption AS affected_api, u.serviceContexts AS services, entry.`全限定名` AS entry_method, u, ru, p ORDER BY affected_api",
+          "params": {
+            "node_id": "def:fe42f3aad5eba8412495154fc0dc3522a8b7c61461460024422d9407d0dbf45b"
+          }
+        },
+        {
+          "sq": "sq_impact_cross",
+          "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p1=(local_entry:`方法`)-[rs1:`调用`*0..4]->(target) WHERE ALL(rel IN rs1 WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p1) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(local_entry) MATCH (up_caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rh:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u) MATCH p2=(up_entry:`方法`)-[rs2:`调用`*0..5]->(up_caller) WHERE ALL(rel IN rs2 WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (up_api:`上游API`)-[ru2:`归属于`]->(up_entry) RETURN DISTINCT 'RPC' AS mechanism, up_api.nodeId AS api_id, up_api.caption AS affected_api, up_api.serviceContexts[0] AS affected_service, up_api, ru2, p2, rc, d, rh, u, ru, p1 ORDER BY affected_service, affected_api",
+          "params": {
+            "node_id": "def:fe42f3aad5eba8412495154fc0dc3522a8b7c61461460024422d9407d0dbf45b"
+          }
+        }
+      ],
+      "subquery_count": 2,
+      "record_count": 5,
+      "nodes": 20,
+      "edges": 19,
+      "latency_ms": 11158.88,
+      "summary": "修改 BasicController.queryForTravel 会影响上游入口 API：POST /api/v1/basicservice/basic/travel（ts-basic-service，控制器方法即 queryForTravel）；以及经 RPC 关联的 POST /api/v1/preserveotherservice/preserveOther（ts-preserve-other-service，入口 PreserveOtherController.preserve）。证据显示 preserve 链路经 PreserveOtherServiceImpl.preserve 调用，另见 ts-preserve-service 的 PreserveController.preserve→PreserveServiceImpl.preserve。"
+    },
+    {
+      "id": "H06",
+      "level": "complex",
+      "category": "跨服务变更影响分析",
+      "question": "修改 StationController.queryForStationId 方法会影响哪些上游入口 API？",
+      "passed": true,
+      "reason": "exact set match (3 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm",
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p=(entry:`方法`)-[rs:`调用`*0..6]->(target) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(entry) RETURN DISTINCT 'IMPACT' AS mechanism, u.nodeId AS api_id, u.caption AS affected_api, u.serviceContexts AS services, entry.nodeId AS entry_method_id, entry.`全限定名` AS entry_method, u, ru, p ORDER BY affected_api",
+      "all_cyphers": [
+        {
+          "sq": "sq_impact_local",
+          "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p=(entry:`方法`)-[rs:`调用`*0..6]->(target) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(entry) RETURN DISTINCT 'IMPACT' AS mechanism, u.nodeId AS api_id, u.caption AS affected_api, u.serviceContexts AS services, entry.nodeId AS entry_method_id, entry.`全限定名` AS entry_method, u, ru, p ORDER BY affected_api",
+          "params": {
+            "node_id": "def:c03e994f0b0f2d1677c92571a05dd36c58bab1260c859726f20dcdf2cbf4ac16"
+          }
+        },
+        {
+          "sq": "sq_impact_cross",
+          "cypher": "MATCH (target:`方法` {nodeId: $node_id}) MATCH p1=(local_entry:`方法`)-[rs1:`调用`*0..4]->(target) WHERE ALL(rel IN rs1 WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p1) WHERE x:`方法`) MATCH (u:`上游API`)-[ru:`归属于`]->(local_entry) MATCH (up_caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rh:`调用` {`关系语义`: '跨服务HTTP调用'}]->(u) MATCH p2=(up_entry:`方法`)-[rs2:`调用`*0..5]->(up_caller) WHERE ALL(rel IN rs2 WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p2) WHERE x:`方法`) MATCH (up_api:`上游API`)-[ru2:`归属于`]->(up_entry) RETURN DISTINCT 'RPC' AS mechanism, up_api.nodeId AS api_id, up_api.caption AS affected_api, up_api.serviceContexts[0] AS affected_service, up_api, ru2, p2, rc, d, rh, u, ru, p1 ORDER BY affected_service, affected_api",
+          "params": {
+            "node_id": "def:c03e994f0b0f2d1677c92571a05dd36c58bab1260c859726f20dcdf2cbf4ac16"
+          }
+        }
+      ],
+      "subquery_count": 2,
+      "record_count": 3,
+      "nodes": 11,
+      "edges": 10,
+      "latency_ms": 10315.18,
+      "summary": "修改 StationController.queryForStationId 会影响上游入口 API：GET /api/v1/stationservice/stations/id/{stationNameForId}（ts-station-service，直接归属该入口方法）。另经 RPC 关联到 ts-basic-service 的 GET /api/v1/basicservice/basic/{stationName}（BasicController.queryForStationId），其内部调用 BasicServiceImpl.queryForStationId；路径证据还显示 BasicController.queryForTravel → BasicServiceImpl.queryForTravel 链路。"
+    },
+    {
+      "id": "H07",
+      "level": "complex",
+      "category": "服务级反向影响穿透",
+      "question": "ts-order-service 发生接口变更会影响哪些上游微服务的入口 API？",
+      "passed": true,
+      "reason": "exact set match via col 'upstream_api_id' (15 items)",
+      "status": "success",
+      "generation_modes": [
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (d:`下游API`)-[rt:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) MATCH (caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d) MATCH p=(entry:`方法`)-[rs:`调用`*0..5]->(caller) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (up_api:`上游API`)-[ru:`归属于`]->(entry) UNWIND up_api.serviceContexts AS upstream_service RETURN DISTINCT upstream_service, up_api.nodeId AS upstream_api_id, up_api.caption AS upstream_api, d.caption AS called_api, up_api, ru, p, rc, d, rt, svc ORDER BY upstream_service, upstream_api",
+      "all_cyphers": [
+        {
+          "sq": null,
+          "cypher": "MATCH (d:`下游API`)-[rt:`目标服务`]->(svc:`微服务` {nodeId: $service_id}) MATCH (caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d) MATCH p=(entry:`方法`)-[rs:`调用`*0..5]->(caller) WHERE ALL(rel IN rs WHERE rel.`关系语义` IN ['方法调用', '方法实现']) AND ALL(x IN nodes(p) WHERE x:`方法`) MATCH (up_api:`上游API`)-[ru:`归属于`]->(entry) UNWIND up_api.serviceContexts AS upstream_service RETURN DISTINCT upstream_service, up_api.nodeId AS upstream_api_id, up_api.caption AS upstream_api, d.caption AS called_api, up_api, ru, p, rc, d, rt, svc ORDER BY upstream_service, upstream_api",
+          "params": {
+            "service_id": "svc:ts-order-service"
+          }
+        }
+      ],
+      "subquery_count": 1,
+      "record_count": 25,
+      "nodes": 76,
+      "edges": 83,
+      "latency_ms": 12270.15,
+      "summary": "结论：证据显示上游微服务 ts-admin-order-service 的入口 API 会受影响。关键证据：其入口 DELETE /api/v1/adminorderservice/adminorder/{orderId}/{trainNumber}（AdminOrderController.deleteOrder）经 AdminOrderServiceImpl.deleteOrder 调用下游 DELETE /api/v1/orderservice/order/{orderId}。证据仅明确该上游服务及此入口 API。"
+    },
+    {
+      "id": "H08",
+      "level": "complex",
+      "category": "RPC+MQ双向联合依赖",
+      "question": "查询 ts-food-service 的双向跨服务依赖清单（同时包含入向与出向的同步 RPC 与异步 MQ）",
+      "passed": true,
+      "reason": "exact pair set match (6 pairs)",
+      "status": "success",
+      "generation_modes": [
+        "llm",
+        "llm",
+        "llm"
+      ],
+      "repairs": 0,
+      "cypher": "MATCH (m:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) WHERE $service IN d.serviceContexts RETURN DISTINCT 'RPC' AS mechanism, svc.nodeId AS peer_id, svc.`服务名称` AS peer_service, d.nodeId AS channel_id, d.caption AS channel, m.nodeId AS source_method_id, m.`方法名` AS source_method, m, rc, d, rt, svc",
+      "all_cyphers": [
+        {
+          "sq": "sq_rpc_out",
+          "cypher": "MATCH (m:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d:`下游API`)-[rt:`目标服务`]->(svc:`微服务`) WHERE $service IN d.serviceContexts RETURN DISTINCT 'RPC' AS mechanism, svc.nodeId AS peer_id, svc.`服务名称` AS peer_service, d.nodeId AS channel_id, d.caption AS channel, m.nodeId AS source_method_id, m.`方法名` AS source_method, m, rc, d, rt, svc",
+          "params": {
+            "service": "ts-food-service"
+          }
+        },
+        {
+          "sq": "sq_rpc_in",
+          "cypher": "MATCH (d:`下游API`)-[rt:`目标服务`]->(svc:`微服务` {`服务名称`: $service}) UNWIND d.serviceContexts AS peer_service MATCH (caller:`方法`)-[rc:`调用` {`关系语义`: '通信边界'}]->(d) MATCH p=(caller)-[rc]->(d)-[rt]->(svc) RETURN DISTINCT 'RPC' AS mechanism, peer_service AS peer_service, svc.nodeId AS target_id, svc.`服务名称` AS target_name, d.nodeId AS api_id, d.caption AS channel, d.`HTTP方法` AS http_method, d.`API路径` AS api_path, caller.nodeId AS caller_id, caller.`全限定名` AS caller_name, p AS path, d AS downstream_api, svc AS target_service",
+          "params": {
+            "service": "ts-food-service"
+          }
+        },
+        {
+          "sq": "sq_mq_bi",
+          "cypher": "MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列`)-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` AND $service IN pub.serviceContexts UNWIND sub.serviceContexts AS dst_svc MATCH (svc:`微服务` {`服务名称`: dst_svc}) RETURN DISTINCT 'MQ' AS mechanism, 'OUTBOUND' AS direction, svc.nodeId AS peer_id, svc.`服务名称` AS peer_service, q.`队列名称` AS channel, r1.`路由键` AS routing_key, pub, r1, ex, r2, q, r3, sub, svc UNION MATCH (pub:`方法`)-[r1:`消息流` {`消息流类型`: '发布至'}]->(ex:`消息交换机`)-[r2:`消息流` {`消息流类型`: '路由至'}]->(q:`消息队列`)-[r3:`消息流` {`消息流类型`: '消费自'}]->(sub:`方法`) WHERE r1.`路由键` = r2.`路由键` AND $service IN sub.serviceContexts UNWIND pub.serviceContexts AS src_svc MATCH (svc:`微服务` {`服务名称`: src_svc}) RETURN DISTINCT 'MQ' AS mechanism, 'INBOUND' AS direction, svc.nodeId AS peer_id, svc.`服务名称` AS peer_service, q.`队列名称` AS channel, r1.`路由键` AS routing_key, pub, r1, ex, r2, q, r3, sub, svc",
+          "params": {
+            "service": "ts-food-service"
+          }
+        }
+      ],
+      "subquery_count": 3,
+      "record_count": 6,
+      "nodes": 17,
+      "edges": 13,
+      "latency_ms": 16586.92,
+      "summary": "ts-food-service 双向依赖共6条记录。出向同步RPC：FoodServiceImpl.getAllFood 调用 ts-train-food-service 的 GET /api/v1/trainfoodservice/trainfoods/{tripId}，及 ts-travel-service 的 GET /api/v1/travelservice/routes/{tripId}。入向同步RPC：ts-preserve-service 的 PreserveServiceImpl.createFoodOrder 与 ts-preserve-other-service 的 PreserveOtherServiceImpl.createFoodOrder 均经 POST /api/v1/foodservice/orders 调用本服务。证据中未见异步MQ记录。"
+    }
+  ]
+}

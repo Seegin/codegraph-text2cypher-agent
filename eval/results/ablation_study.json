@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-11-23T08:45:56.231274Z",
+  "model": "deepseek/DeepSeek-V4.1-Flash",
+  "schema_hash": "22b9370aac98dd67",
+  "graph_version": "master-to-dd92845",
+  "runs": [
+    {
+      "tag": "baseline_schema_only",
+      "passed": 21,
+      "total": 30,
+      "accuracy_pct": 70.0,
+      "grade": "C",
+      "simple": 10,
+      "medium": 10,
+      "complex": 1,
+      "p50_ms": 3877.75,
+      "p95_ms": 10586.84,
+      "repairs": 0
+    },
+    {
+      "tag": "ablation_no_decomposition",
+      "passed": 28,
+      "total": 30,
+      "accuracy_pct": 93.33,
+      "grade": "A",
+      "simple": 10,
+      "medium": 12,
+      "complex": 6,
+      "p50_ms": 4004.62,
+      "p95_ms": 13063.64,
+      "repairs": 1
+    },
+    {
+      "tag": "ablation_tfidf_no_rerank",
+      "passed": 30,
+      "total": 30,
+      "accuracy_pct": 100.0,
+      "grade": "A",
+      "simple": 10,
+      "medium": 12,
+      "complex": 8,
+      "p50_ms": 3858.7,
+      "p95_ms": 7808.55,
+      "repairs": 2
+    },
+    {
+      "tag": "full_system_live_llm",
+      "passed": 30,
+      "total": 30,
+      "accuracy_pct": 100.0,
+      "grade": "A",
+      "simple": 10,
+      "medium": 12,
+      "complex": 8,
+      "p50_ms": 6393.97,
+      "p95_ms": 14320.03,
+      "repairs": 0
+    }
+  ]
+}
